@@ -138,19 +138,19 @@ internal/
 **When** `args.Parse([]string{"-rf", "foo", "bar"})` is called
 **Then** it returns `ParsedArgs{Files: ["foo","bar"], RmFlags: ["-rf"], SkipTrash: false, Restore: false}`
 
-- [ ] **RED**: Write failing test
+- [x] **RED**: Write failing test
   - Location: `internal/args/args_test.go`
   - Test name: `TestParse_FilesAndFlags`
   - Define `ParsedArgs` struct in the test; it will drive the struct shape in production code
 
-- [ ] **RUN**: Confirm test FAILS
+- [x] **RUN**: Confirm test FAILS
 
-- [ ] **GREEN**: Create `internal/args/args.go`, define `ParsedArgs`, implement `Parse(argv []string) (ParsedArgs, error)`
+- [x] **GREEN**: Create `internal/args/args.go`, define `ParsedArgs`, implement `Parse(argv []string) (ParsedArgs, error)`
   - Walk `argv`, separate known trash-rm flags from everything else (flags + files pass through to `RmFlags` / `Files`)
 
-- [ ] **RUN**: Confirm test PASSES
+- [x] **RUN**: Confirm test PASSES
 
-- [ ] **REFACTOR**: None needed
+- [x] **REFACTOR**: None needed
 
 - [ ] **COMMIT**: `"feat: args.Parse separates files from rm flags"`
 
@@ -162,16 +162,16 @@ internal/
 **When** `args.Parse(argv)` is called
 **Then** `SkipTrash` is `true`, `"--be-brave-skip-trash"` is absent from `RmFlags`, file and `-f` are still present
 
-- [ ] **RED**: Write failing test
+- [x] **RED**: Write failing test
   - Test name: `TestParse_SkipTrashFlag`
 
-- [ ] **RUN**: Confirm test FAILS
+- [x] **RUN**: Confirm test FAILS (or passes — behavior was already implemented in step 2.1 GREEN)
 
-- [ ] **GREEN**: Detect `--be-brave-skip-trash` in the walk loop; set `SkipTrash=true`; do not append to `RmFlags`
+- [x] **GREEN**: Detect `--be-brave-skip-trash` in the walk loop; set `SkipTrash=true`; do not append to `RmFlags`
 
-- [ ] **RUN**: Confirm test PASSES
+- [x] **RUN**: Confirm test PASSES
 
-- [ ] **REFACTOR**: None needed
+- [x] **REFACTOR**: None needed
 
 - [ ] **COMMIT**: `"feat: args.Parse consumes --be-brave-skip-trash"`
 
@@ -183,16 +183,16 @@ internal/
 **When** `args.Parse(argv)` is called
 **Then** `Restore` is `true` and `RmFlags` and `Files` are empty
 
-- [ ] **RED**: Write failing test
+- [x] **RED**: Write failing test
   - Test name: `TestParse_RestoreFlag`
 
-- [ ] **RUN**: Confirm test FAILS
+- [x] **RUN**: Confirm test FAILS (or passes — behavior was already implemented in step 2.1 GREEN)
 
-- [ ] **GREEN**: Detect `--restore`; set `Restore=true`
+- [x] **GREEN**: Detect `--restore`; set `Restore=true`
 
-- [ ] **RUN**: Confirm test PASSES
+- [x] **RUN**: Confirm test PASSES
 
-- [ ] **REFACTOR**: None needed
+- [x] **REFACTOR**: None needed
 
 - [ ] **COMMIT**: `"feat: args.Parse consumes --restore"`
 
@@ -204,17 +204,17 @@ internal/
 **When** `args.CalledAsRm(argv0 string) bool` is called
 **Then** it returns `true`
 
-- [ ] **RED**: Write failing test
+- [x] **RED**: Write failing test
   - Test name: `TestCalledAsRm_True`
   - Input: `"/usr/local/bin/rm"` and `"rm"` (both)
 
-- [ ] **RUN**: Confirm test FAILS
+- [x] **RUN**: Confirm test FAILS
 
-- [ ] **GREEN**: Implement `CalledAsRm(argv0 string) bool` — `filepath.Base(argv0) == "rm"`
+- [x] **GREEN**: Implement `CalledAsRm(argv0 string) bool` — `filepath.Base(argv0) == "rm"`
 
-- [ ] **RUN**: Confirm test PASSES
+- [x] **RUN**: Confirm test PASSES
 
-- [ ] **REFACTOR**: None needed
+- [x] **REFACTOR**: None needed
 
 - [ ] **COMMIT**: `"feat: args.CalledAsRm detects symlink invocation"`
 
@@ -226,14 +226,14 @@ internal/
 **When** `args.Parse(argv)` is called
 **Then** it returns a non-nil error
 
-- [ ] **RED**: Write failing test
+- [x] **RED**: Write failing test
   - Test name: `TestParse_NoFiles_ReturnsError`
 
-- [ ] **GREEN**: After walking, if `Files` is empty (and `Restore` is false), return `errors.New("missing file operand")`
+- [x] **GREEN**: After walking, if `Files` is empty (and `Restore` is false), return `errors.New("missing file operand")`
 
-- [ ] **RUN**: Confirm test PASSES
+- [x] **RUN**: Confirm test PASSES
 
-- [ ] **REFACTOR**: None needed
+- [x] **REFACTOR**: None needed
 
 - [ ] **COMMIT**: `"feat: args.Parse errors when no files given"`
 
@@ -781,8 +781,8 @@ These tests fill LOW-risk gaps not driven by a single slice.
 
 ### E1: CalledAsRm with full binary name returns false
 
-- [ ] **RED**: `TestCalledAsRm_False` — `args.CalledAsRm("/usr/local/bin/trash-rm")` → `false`
-- [ ] **GREEN → REFACTOR**
+- [x] **RED**: `TestCalledAsRm_False` — `args.CalledAsRm("/usr/local/bin/trash-rm")` → `false`
+- [x] **GREEN → REFACTOR**
 - [ ] **COMMIT**: `"test: CalledAsRm false for trash-rm binary name"`
 
 ### E2: Append to log is safe when parent dir already exists
