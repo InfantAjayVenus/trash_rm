@@ -632,18 +632,18 @@ This slice wires all packages together. Tests here are integration-style but sti
 **When** `app.Run(args, commander, logPath)` is called with `["foo.txt"]`
 **Then** Commander received: `("trash", "foo.txt")` then `("/bin/rm", "foo.txt")`; log file contains one entry with `Files: ["foo.txt"]`
 
-- [ ] **RED**: Write failing test
+- [x] **RED**: Write failing test
   - Location: `main_test.go` (or `internal/app/app_test.go` if you extract a top-level `app` package)
   - Test name: `TestRun_HappyPath_TrashThenRm`
   - Inject: Commander, logPath (temp), a fixed clock for timestamp, CWD
 
-- [ ] **RUN**: Confirm test FAILS
+- [x] **RUN**: Confirm test FAILS
 
-- [ ] **GREEN**: Wire `args.Parse` → `trash.LinuxBackend.Trash` → `log.Append` → `rm.Exec`; plumb Commander through
+- [x] **GREEN**: Wire `args.Parse` → `trash.LinuxBackend.Trash` → `log.Append` → `rm.Exec`; plumb Commander through
 
-- [ ] **RUN**: Confirm test PASSES
+- [x] **RUN**: Confirm test PASSES
 
-- [ ] **REFACTOR**: Confirm command order is enforced; check log entry fields
+- [x] **REFACTOR**: Confirm command order is enforced; check log entry fields
 
 - [ ] **COMMIT**: `"feat: main wires trash → log → rm happy path"`
 
@@ -655,17 +655,17 @@ This slice wires all packages together. Tests here are integration-style but sti
 **When** `app.Run` is called
 **Then** `rm` is still called; log file is empty (no entry written)
 
-- [ ] **RED**: Write failing test
+- [x] **RED**: Write failing test
   - Test name: `TestRun_TrashFail_UserConfirms_RmRuns`
   - Add a `PromptFunc func(msg string) (string, error)` injectable to `app.Run`
 
-- [ ] **RUN**: Confirm test FAILS
+- [x] **RUN**: Confirm test FAILS
 
-- [ ] **GREEN**: On `Trash` error, call `PromptFunc`; if response is `"y"` or `"Y"`, skip log and call rm
+- [x] **GREEN**: On `Trash` error, call `PromptFunc`; if response is `"y"` or `"Y"`, skip log and call rm
 
-- [ ] **RUN**: Confirm test PASSES
+- [x] **RUN**: Confirm test PASSES
 
-- [ ] **REFACTOR**: None needed
+- [x] **REFACTOR**: None needed
 
 - [ ] **COMMIT**: `"feat: app prompts user on trash failure; rm runs on confirm"`
 
@@ -677,14 +677,14 @@ This slice wires all packages together. Tests here are integration-style but sti
 **When** `app.Run` is called
 **Then** `rm` is NOT called; return value is a non-zero exit code
 
-- [ ] **RED**: Write failing test
+- [x] **RED**: Write failing test
   - Test name: `TestRun_TrashFail_UserDeclines_Aborts`
 
-- [ ] **GREEN**: If response is not `"y"`/`"Y"`, return non-zero exit code without calling rm
+- [x] **GREEN**: If response is not `"y"`/`"Y"`, return non-zero exit code without calling rm
 
-- [ ] **RUN**: Confirm test PASSES
+- [x] **RUN**: Confirm test PASSES
 
-- [ ] **REFACTOR**: None needed
+- [x] **REFACTOR**: None needed
 
 - [ ] **COMMIT**: `"feat: app aborts on user decline after trash failure"`
 
@@ -696,17 +696,17 @@ This slice wires all packages together. Tests here are integration-style but sti
 **When** `app.Run` is called with `isTTY=false`
 **Then** `rm` is NOT called; `PromptFunc` is never invoked; return is non-zero
 
-- [ ] **RED**: Write failing test
+- [x] **RED**: Write failing test
   - Test name: `TestRun_NonTTY_TrashFail_AutoAborts`
   - Add `isTTY bool` to `app.Run` signature
 
-- [ ] **RUN**: Confirm test FAILS
+- [x] **RUN**: Confirm test FAILS
 
-- [ ] **GREEN**: Gate the prompt behind `isTTY`; if false, skip prompt and abort
+- [x] **GREEN**: Gate the prompt behind `isTTY`; if false, skip prompt and abort
 
-- [ ] **RUN**: Confirm test PASSES
+- [x] **RUN**: Confirm test PASSES
 
-- [ ] **REFACTOR**: None needed
+- [x] **REFACTOR**: None needed
 
 - [ ] **COMMIT**: `"feat: app auto-aborts on trash failure in non-TTY context"`
 
@@ -718,17 +718,17 @@ This slice wires all packages together. Tests here are integration-style but sti
 **When** `app.Run` is called
 **Then** `rm` is NOT called; return is non-zero
 
-- [ ] **RED**: Write failing test
+- [x] **RED**: Write failing test
   - Test name: `TestRun_LogWriteFail_BlocksRm`
   - Use `os.Chmod(parentDir, 0o000)` in the test; defer `os.Chmod` back to restore
 
-- [ ] **RUN**: Confirm test FAILS
+- [x] **RUN**: Confirm test FAILS
 
-- [ ] **GREEN**: Check error from `log.Append`; if non-nil, return non-zero without calling rm
+- [x] **GREEN**: Check error from `log.Append`; if non-nil, return non-zero without calling rm
 
-- [ ] **RUN**: Confirm test PASSES
+- [x] **RUN**: Confirm test PASSES
 
-- [ ] **REFACTOR**: None needed
+- [x] **REFACTOR**: None needed
 
 - [ ] **COMMIT**: `"feat: log write failure blocks rm (fatal)"`
 
@@ -740,14 +740,14 @@ This slice wires all packages together. Tests here are integration-style but sti
 **When** `app.Run` is called with `["--be-brave-skip-trash", "foo.txt"]`
 **Then** `trash` is never called; log is empty; `rm` is called with `["foo.txt"]`
 
-- [ ] **RED**: Write failing test
+- [x] **RED**: Write failing test
   - Test name: `TestRun_SkipTrash_CallsRmDirectly`
 
-- [ ] **GREEN**: Branch on `parsedArgs.SkipTrash`; if true, skip trash and log, call rm directly
+- [x] **GREEN**: Branch on `parsedArgs.SkipTrash`; if true, skip trash and log, call rm directly
 
-- [ ] **RUN**: Confirm test PASSES
+- [x] **RUN**: Confirm test PASSES
 
-- [ ] **REFACTOR**: None needed
+- [x] **REFACTOR**: None needed
 
 - [ ] **COMMIT**: `"feat: --be-brave-skip-trash bypasses trash and log"`
 
@@ -759,17 +759,17 @@ This slice wires all packages together. Tests here are integration-style but sti
 **When** `app.Run` is called
 **Then** the returned exit code is 2
 
-- [ ] **RED**: Write failing test
+- [x] **RED**: Write failing test
   - Test name: `TestRun_ExitCodeMirrorsRm`
   - Inject a Commander that returns a Cmd with exit code 2 (use `exec.Command("sh", "-c", "exit 2")`)
 
-- [ ] **RUN**: Confirm test FAILS
+- [x] **RUN**: Confirm test FAILS
 
-- [ ] **GREEN**: Capture exit code from rm via `cmd.ProcessState.ExitCode()`; return it
+- [x] **GREEN**: Capture exit code from rm via `cmd.ProcessState.ExitCode()`; return it
 
-- [ ] **RUN**: Confirm test PASSES
+- [x] **RUN**: Confirm test PASSES
 
-- [ ] **REFACTOR**: None needed
+- [x] **REFACTOR**: None needed
 
 - [ ] **COMMIT**: `"feat: app exit code mirrors rm exit code"`
 
@@ -807,11 +807,11 @@ These tests fill LOW-risk gaps not driven by a single slice.
 
 ## Final Check
 
-- [ ] **Run full test suite**: `go test ./...` — all tests pass
-- [ ] **Review test names**: Read them top to bottom — do they describe trash-rm's behavior clearly?
-- [ ] **Review implementation**: Any dead code, unused parameters, or logic that appeared before a test demanded it?
-- [ ] **go vet**: `go vet ./...` — no warnings
-- [ ] **Check that `--be-brave-skip-trash` does not appear in rm's argv**: Review Slice 2 behavior 2.2 test covers this
+- [x] **Run full test suite**: `go test ./...` — all tests pass
+- [x] **Review test names**: Read them top to bottom — do they describe trash-rm's behavior clearly?
+- [x] **Review implementation**: Any dead code, unused parameters, or logic that appeared before a test demanded it?
+- [x] **go vet**: `go vet ./...` — no warnings
+- [x] **Check that `--be-brave-skip-trash` does not appear in rm's argv**: Review Slice 2 behavior 2.2 test covers this
 
 ---
 
