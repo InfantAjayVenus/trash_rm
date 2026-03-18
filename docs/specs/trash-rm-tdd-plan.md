@@ -512,18 +512,18 @@ Here we test the data layer: filtering, restoring, log rewriting.
 **When** `restore.FilterAlive(entries []log.LogEntry, trashListOutput string) []log.LogEntry` is called
 **Then** it returns only the entry for `foo.txt`
 
-- [ ] **RED**: Write failing test
+- [x] **RED**: Write failing test
   - Location: `internal/restore/restore_test.go`
   - Test name: `TestFilterAlive_ReturnsOnlyLiveEntries`
   - `trashListOutput` is a multi-line string as `trash-list` would produce
 
-- [ ] **RUN**: Confirm test FAILS
+- [x] **RUN**: Confirm test FAILS
 
-- [ ] **GREEN**: Create `internal/restore/restore.go`; implement `FilterAlive` — for each entry, check whether any `entry.Files` substring appears in `trashListOutput`
+- [x] **GREEN**: Create `internal/restore/restore.go`; implement `FilterAlive` — for each entry, check whether any `entry.Files` substring appears in `trashListOutput`
 
-- [ ] **RUN**: Confirm test PASSES
+- [x] **RUN**: Confirm test PASSES
 
-- [ ] **REFACTOR**: None needed
+- [x] **REFACTOR**: None needed
 
 - [ ] **COMMIT**: `"feat: restore.FilterAlive cross-references log vs trash-list"`
 
@@ -535,14 +535,14 @@ Here we test the data layer: filtering, restoring, log rewriting.
 **When** `restore.RestoreEntry(entry, commander)` is called
 **Then** the Commander was called twice: `("trash-restore", "foo.txt")` and `("trash-restore", "bar.txt")`
 
-- [ ] **RED**: Write failing test
+- [x] **RED**: Write failing test
   - Test name: `TestRestoreEntry_CallsTrashRestorePerFile`
 
-- [ ] **GREEN**: Implement `RestoreEntry(entry log.LogEntry, commander Commander) error` — iterate files, exec `trash-restore <file>`
+- [x] **GREEN**: Implement `RestoreEntry(entry log.LogEntry, commander Commander) error` — iterate files, exec `trash-restore <file>`
 
-- [ ] **RUN**: Confirm test PASSES
+- [x] **RUN**: Confirm test PASSES
 
-- [ ] **REFACTOR**: None needed
+- [x] **REFACTOR**: None needed
 
 - [ ] **COMMIT**: `"feat: restore.RestoreEntry calls trash-restore per file"`
 
@@ -554,15 +554,15 @@ Here we test the data layer: filtering, restoring, log rewriting.
 **When** `restore.RestoreEntry` is called
 **Then** error message contains "permanently deleted from trash"
 
-- [ ] **RED**: Write failing test
+- [x] **RED**: Write failing test
   - Test name: `TestRestoreEntry_PermanentlyDeletedError`
   - Inject two commanders: one for `trash-restore` (fails), one for `trash-list` (returns output without the file)
 
-- [ ] **GREEN**: On `trash-restore` failure, run `trash-list` check; if file absent, return the specific message
+- [x] **GREEN**: On `trash-restore` failure, run `trash-list` check; if file absent, return the specific message
 
-- [ ] **RUN**: Confirm test PASSES
+- [x] **RUN**: Confirm test PASSES
 
-- [ ] **REFACTOR**: None needed
+- [x] **REFACTOR**: None needed
 
 - [ ] **COMMIT**: `"feat: restore.RestoreEntry distinguishes GC'd files from other errors"`
 
@@ -574,17 +574,17 @@ Here we test the data layer: filtering, restoring, log rewriting.
 **When** `restore.Run(logPath, commander)` is called
 **Then** it returns `(msg="No trash history found.", exitCode=0)` without error
 
-- [ ] **RED**: Write failing test
+- [x] **RED**: Write failing test
   - Test name: `TestRun_EmptyLog`
   - `Run` returns `(message string, code int, err error)` or writes to an `io.Writer` — pick the shape that makes testing easy; prefer returning a string for the message so tests don't capture stdout
 
-- [ ] **RUN**: Confirm test FAILS
+- [x] **RUN**: Confirm test FAILS
 
-- [ ] **GREEN**: Implement `Run` skeleton; call `log.ReadAll`; if len==0, return the message
+- [x] **GREEN**: Implement `Run` skeleton; call `log.ReadAll`; if len==0, return the message
 
-- [ ] **RUN**: Confirm test PASSES
+- [x] **RUN**: Confirm test PASSES
 
-- [ ] **REFACTOR**: None needed
+- [x] **REFACTOR**: None needed
 
 - [ ] **COMMIT**: `"feat: restore.Run reports empty history without error"`
 
@@ -596,17 +596,17 @@ Here we test the data layer: filtering, restoring, log rewriting.
 **When** `restore.Run` is called with a SelectFunc that always picks index 0 and a Commander that succeeds
 **Then** the log file contains only the second entry afterward
 
-- [ ] **RED**: Write failing test
+- [x] **RED**: Write failing test
   - Test name: `TestRun_RemovesEntryAfterRestore`
   - Add a `SelectFunc func(entries []log.LogEntry) (int, error)` parameter so the bubbletea TUI is pluggable — in tests pass a trivial picker; in production pass the TUI picker
 
-- [ ] **RUN**: Confirm test FAILS
+- [x] **RUN**: Confirm test FAILS
 
-- [ ] **GREEN**: After `RestoreEntry` succeeds, call `log.Rewrite` with the entry removed
+- [x] **GREEN**: After `RestoreEntry` succeeds, call `log.Rewrite` with the entry removed
 
-- [ ] **RUN**: Confirm test PASSES
+- [x] **RUN**: Confirm test PASSES
 
-- [ ] **REFACTOR**: None needed
+- [x] **REFACTOR**: None needed
 
 - [ ] **COMMIT**: `"feat: restore.Run rewrites log after successful restore"`
 
@@ -799,8 +799,8 @@ These tests fill LOW-risk gaps not driven by a single slice.
 
 ### E4: FilterAlive returns empty when no files survive
 
-- [ ] **RED**: `TestFilterAlive_AllGarbageCollected` — all entries' files absent from trash-list → empty result
-- [ ] **GREEN**: Loop exits with empty slice
+- [x] **RED**: `TestFilterAlive_AllGarbageCollected` — all entries' files absent from trash-list → empty result
+- [x] **GREEN**: Loop exits with empty slice
 - [ ] **COMMIT**: `"test: restore.FilterAlive returns empty when all GC'd"`
 
 ---
