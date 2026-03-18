@@ -167,3 +167,28 @@ func TestRestoreEntry_CallsTrashRestorePerFile(t *testing.T) {
 		t.Errorf("second call: got (%s, %v), want (trash-restore, [bar.txt])", calls[1].name, calls[1].args)
 	}
 }
+
+func TestRun_UserQuitsWithoutRestoring(t *testing.T) {
+	tmpDir := t.TempDir()
+	logPath := tmpDir + "/history.json"
+
+	entry := log.LogEntry{Timestamp: "2026-03-17T10:00:00Z", Command: "rm foo.txt", CWD: "/home/user", Files: []string{"foo.txt"}}
+	if err := log.Append(logPath, entry); err != nil {
+		t.Fatal(err)
+	}
+
+	quitFn := func(entries []log.LogEntry) (int, error) { return -1, nil }
+	trashListCommander := func(name string, args ...string) *exec.Cmd {
+		return exec.Command("echo", "foo.txt") // file appears in trash-list so it passes FilterAlive
+	}
+
+	var out strings.Builder
+	if err := restore.Run(logPath, quitFn, trashListCommander, &out); err != nil {
+		t.Fatalf("expected nil error on quit, got: %v", err)
+	}
+
+	remaining, _ := log.ReadAll(logPath)
+	if len(remaining) != 1 {
+		t.Errorf("log should be unchanged after quit, got %d entries", len(remaining))
+	}
+}

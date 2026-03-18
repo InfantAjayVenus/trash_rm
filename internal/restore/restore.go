@@ -82,6 +82,9 @@ func Run(logPath string, selectFn SelectFunc, commander Commander, out io.Writer
 	if err != nil {
 		return err
 	}
+	if chosen < 0 {
+		return nil
+	}
 
 	selectedEntry := alive[chosen]
 	if err := RestoreEntry(selectedEntry, commander); err != nil {
