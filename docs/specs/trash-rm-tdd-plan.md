@@ -372,19 +372,19 @@ internal/
 **When** `log.Append(path, entry)` is called with a valid `LogEntry`
 **Then** the file is created (including parent dirs) and contains exactly one JSON line matching the entry fields
 
-- [ ] **RED**: Write failing test
+- [x] **RED**: Write failing test
   - Location: `internal/log/log_test.go`
   - Test name: `TestAppend_CreatesFileAndWritesNDJSON`
   - Use `os.MkdirTemp` for the temp directory; construct `LogEntry{Timestamp, Command, CWD, Files}`
   - Assert `os.ReadFile` returns one JSON line; unmarshal and compare fields
 
-- [ ] **RUN**: Confirm test FAILS
+- [x] **RUN**: Confirm test FAILS
 
-- [ ] **GREEN**: Create `internal/log/log.go`; define `LogEntry` struct with json tags; implement `Append(path string, entry LogEntry) error` — `os.MkdirAll` for parent, open with `O_APPEND|O_CREATE|O_WRONLY`, marshal to JSON, write + newline
+- [x] **GREEN**: Create `internal/log/log.go`; define `LogEntry` struct with json tags; implement `Append(path string, entry LogEntry) error` — `os.MkdirAll` for parent, open with `O_APPEND|O_CREATE|O_WRONLY`, marshal to JSON, write + newline
 
-- [ ] **RUN**: Confirm test PASSES
+- [x] **RUN**: Confirm test PASSES
 
-- [ ] **REFACTOR**: None needed
+- [x] **REFACTOR**: None needed
 
 - [ ] **COMMIT**: `"feat: log.Append creates NDJSON sidecar log"`
 
@@ -396,14 +396,14 @@ internal/
 **When** `log.Append` is called a second time
 **Then** the file contains two lines, each valid JSON
 
-- [ ] **RED**: Write failing test
+- [x] **RED**: Write failing test
   - Test name: `TestAppend_AppendsWithoutOverwriting`
 
-- [ ] **GREEN**: The `O_APPEND` flag already handles this — test should pass with current implementation; if not, fix the open flags
+- [x] **GREEN**: The `O_APPEND` flag already handles this — test should pass with current implementation; if not, fix the open flags
 
-- [ ] **RUN**: Confirm test PASSES
+- [x] **RUN**: Confirm test PASSES
 
-- [ ] **REFACTOR**: None needed
+- [x] **REFACTOR**: None needed
 
 - [ ] **COMMIT**: `"test: log.Append verified to append not overwrite"`
 
@@ -415,17 +415,17 @@ internal/
 **When** `log.ReadAll(path string) ([]LogEntry, error)` is called
 **Then** it returns a slice of 3 entries in file order (oldest first)
 
-- [ ] **RED**: Write failing test
+- [x] **RED**: Write failing test
   - Test name: `TestReadAll_ReturnsAllEntriesInOrder`
   - Write 3 distinct entries via `Append`, then call `ReadAll` and check length + field values
 
-- [ ] **RUN**: Confirm test FAILS
+- [x] **RUN**: Confirm test FAILS
 
-- [ ] **GREEN**: Implement `ReadAll` — open file, `bufio.Scanner`, unmarshal each line, append to slice
+- [x] **GREEN**: Implement `ReadAll` — open file, `bufio.Scanner`, unmarshal each line, append to slice
 
-- [ ] **RUN**: Confirm test PASSES
+- [x] **RUN**: Confirm test PASSES
 
-- [ ] **REFACTOR**: None needed
+- [x] **REFACTOR**: None needed
 
 - [ ] **COMMIT**: `"feat: log.ReadAll reads all NDJSON entries"`
 
@@ -437,14 +437,14 @@ internal/
 **When** `log.ReadAll(path)` is called
 **Then** it returns `([]LogEntry{}, nil)` — no error
 
-- [ ] **RED**: Write failing test
+- [x] **RED**: Write failing test
   - Test name: `TestReadAll_EmptyWhenFileMissing`
 
-- [ ] **GREEN**: Check `os.IsNotExist(err)` on open; return empty slice
+- [x] **GREEN**: Check `os.IsNotExist(err)` on open; return empty slice
 
-- [ ] **RUN**: Confirm test PASSES
+- [x] **RUN**: Confirm test PASSES
 
-- [ ] **REFACTOR**: None needed
+- [x] **REFACTOR**: None needed
 
 - [ ] **COMMIT**: `"feat: log.ReadAll returns empty on missing file"`
 
@@ -456,17 +456,17 @@ internal/
 **When** `log.Rewrite(path, []LogEntry{A, C})` is called (B omitted)
 **Then** the file contains exactly entries A and C, in that order
 
-- [ ] **RED**: Write failing test
+- [x] **RED**: Write failing test
   - Test name: `TestRewrite_RemovesTargetEntry`
   - Write A, B, C via `Append`; read them back; call `Rewrite` with `[A, C]`; `ReadAll` again and assert
 
-- [ ] **RUN**: Confirm test FAILS
+- [x] **RUN**: Confirm test FAILS
 
-- [ ] **GREEN**: Implement `Rewrite(path string, entries []LogEntry) error` — write to a temp file in same dir, then `os.Rename` (atomic on POSIX)
+- [x] **GREEN**: Implement `Rewrite(path string, entries []LogEntry) error` — write to a temp file in same dir, then `os.Rename` (atomic on POSIX)
 
-- [ ] **RUN**: Confirm test PASSES
+- [x] **RUN**: Confirm test PASSES
 
-- [ ] **REFACTOR**: None needed
+- [x] **REFACTOR**: None needed
 
 - [ ] **COMMIT**: `"feat: log.Rewrite atomically rewrites log without removed entry"`
 
@@ -478,15 +478,15 @@ internal/
 **When** `log.ReadAll(path)` is called
 **Then** it returns a non-nil error with a message indicating parse failure
 
-- [ ] **RED**: Write failing test
+- [x] **RED**: Write failing test
   - Test name: `TestReadAll_ErrorOnMalformedJSON`
   - Write `"not json\n"` directly to a temp file
 
-- [ ] **GREEN**: Check `json.Unmarshal` error; return wrapped error
+- [x] **GREEN**: Check `json.Unmarshal` error; return wrapped error
 
-- [ ] **RUN**: Confirm test PASSES
+- [x] **RUN**: Confirm test PASSES
 
-- [ ] **REFACTOR**: None needed
+- [x] **REFACTOR**: None needed
 
 - [ ] **COMMIT**: `"feat: log.ReadAll surfaces JSON parse errors"`
 
@@ -787,14 +787,14 @@ These tests fill LOW-risk gaps not driven by a single slice.
 
 ### E2: Append to log is safe when parent dir already exists
 
-- [ ] **RED**: `TestAppend_ParentDirAlreadyExists` — call Append twice; no error on second call
-- [ ] **GREEN**: `os.MkdirAll` is idempotent — should pass without changes
+- [x] **RED**: `TestAppend_ParentDirAlreadyExists` — call Append twice; no error on second call
+- [x] **GREEN**: `os.MkdirAll` is idempotent — should pass without changes
 - [ ] **COMMIT**: `"test: log.Append safe when parent dir pre-exists"`
 
 ### E3: Rewrite with empty slice clears the file
 
-- [ ] **RED**: `TestRewrite_EmptySliceClearsFile` — write 2 entries, `Rewrite(path, []LogEntry{})`, `ReadAll` returns empty
-- [ ] **GREEN**: Empty-slice write produces an empty file
+- [x] **RED**: `TestRewrite_EmptySliceClearsFile` — write 2 entries, `Rewrite(path, []LogEntry{})`, `ReadAll` returns empty
+- [x] **GREEN**: Empty-slice write produces an empty file
 - [ ] **COMMIT**: `"test: log.Rewrite with empty slice produces empty log"`
 
 ### E4: FilterAlive returns empty when no files survive
