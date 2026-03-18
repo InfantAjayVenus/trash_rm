@@ -255,18 +255,18 @@ internal/
 **When** `rm.RealRmPath()` is called
 **Then** it returns `/bin/rm, nil`
 
-- [ ] **RED**: Write failing test
+- [x] **RED**: Write failing test
   - Location: `internal/rm/rm_test.go`
   - Test name: `TestRealRmPath_ReturnsFirstExisting`
   - Strategy: make the candidate list injectable — `RealRmPathFrom(candidates []string) (string, error)` — so tests can pass fake paths on a temp dir
 
-- [ ] **RUN**: Confirm test FAILS
+- [x] **RUN**: Confirm test FAILS
 
-- [ ] **GREEN**: Create `internal/rm/rm.go`, implement `RealRmPathFrom(candidates []string) (string, error)` — iterate, return first that `os.Stat` says exists
+- [x] **GREEN**: Create `internal/rm/rm.go`, implement `RealRmPathFrom(candidates []string) (string, error)` — iterate, return first that `os.Stat` says exists
 
-- [ ] **RUN**: Confirm test PASSES
+- [x] **RUN**: Confirm test PASSES
 
-- [ ] **REFACTOR**: Add `RealRmPath() (string, error)` that calls `RealRmPathFrom` with `["/bin/rm", "/usr/bin/rm"]`
+- [x] **REFACTOR**: Add `RealRmPath() (string, error)` that calls `RealRmPathFrom` with `["/bin/rm", "/usr/bin/rm"]`
 
 - [ ] **COMMIT**: `"feat: rm.RealRmPathFrom finds rm at known absolute paths"`
 
@@ -278,14 +278,14 @@ internal/
 **When** `RealRmPathFrom([]string{"/tmp/no-rm-here"})` is called
 **Then** it returns `("", error)` with message "real rm not found"
 
-- [ ] **RED**: Write failing test
+- [x] **RED**: Write failing test
   - Test name: `TestRealRmPath_NoneExist`
 
-- [ ] **GREEN**: Default case returns `("", errors.New("real rm not found at /bin/rm or /usr/bin/rm"))`
+- [x] **GREEN**: Default case returns `("", errors.New("real rm not found at /bin/rm or /usr/bin/rm"))`
 
-- [ ] **RUN**: Confirm test PASSES
+- [x] **RUN**: Confirm test PASSES
 
-- [ ] **REFACTOR**: None needed
+- [x] **REFACTOR**: None needed
 
 - [ ] **COMMIT**: `"feat: rm.RealRmPathFrom errors when rm is missing"`
 
@@ -297,18 +297,18 @@ internal/
 **When** `backend.Trash([]string{"foo.txt"})` is called with a Commander that records calls
 **Then** the Commander was called with `("trash", "foo.txt")`
 
-- [ ] **RED**: Write failing test
+- [x] **RED**: Write failing test
   - Location: `internal/trash/trash_test.go`
   - Test name: `TestLinuxBackend_Trash_CallsTrashCommand`
   - Define a small `recordingCommander` in the test file that captures `(name, args)` pairs and returns a no-op `exec.Cmd`
 
-- [ ] **RUN**: Confirm test FAILS
+- [x] **RUN**: Confirm test FAILS
 
-- [ ] **GREEN**: Create `internal/trash/trash.go`; define `Trasher` interface with `Trash(files []string) error`; implement `LinuxBackend{Commander}` struct
+- [x] **GREEN**: Create `internal/trash/trash.go`; define `Trasher` interface with `Trash(files []string) error`; implement `LinuxBackend{Commander}` struct
 
-- [ ] **RUN**: Confirm test PASSES
+- [x] **RUN**: Confirm test PASSES
 
-- [ ] **REFACTOR**: None needed
+- [x] **REFACTOR**: None needed
 
 - [ ] **COMMIT**: `"feat: trash.LinuxBackend calls trash-cli per file"`
 
@@ -320,14 +320,14 @@ internal/
 **When** `backend.Trash([]string{"/Users/alice/foo.txt"})` is called
 **Then** the Commander was called with `("osascript", "-e", "tell application \"Finder\" to delete POSIX file \"/Users/alice/foo.txt\"")`
 
-- [ ] **RED**: Write failing test
+- [x] **RED**: Write failing test
   - Test name: `TestMacBackend_Trash_CallsOsascript`
 
-- [ ] **GREEN**: Implement `MacBackend{Commander}` struct; build the AppleScript string with `fmt.Sprintf`
+- [x] **GREEN**: Implement `MacBackend{Commander}` struct; build the AppleScript string with `fmt.Sprintf`
 
-- [ ] **RUN**: Confirm test PASSES
+- [x] **RUN**: Confirm test PASSES
 
-- [ ] **REFACTOR**: None needed
+- [x] **REFACTOR**: None needed
 
 - [ ] **COMMIT**: `"feat: trash.MacBackend calls osascript for macOS trash"`
 
@@ -339,17 +339,17 @@ internal/
 **When** `backend.CheckDependency()` is called
 **Then** it returns an error containing "Install trash-cli"
 
-- [ ] **RED**: Write failing test
+- [x] **RED**: Write failing test
   - Test name: `TestLinuxBackend_CheckDependency_MissingTrashCli`
   - Strategy: add `CheckDependency() error` to the `Trasher` interface (or as a separate `DependencyChecker` interface); inject a Commander that fails on `which trash` or use a simpler `os.LookPath`-like injection
 
-- [ ] **RUN**: Confirm test FAILS
+- [x] **RUN**: Confirm test FAILS
 
-- [ ] **GREEN**: Implement `CheckDependency()` — look up the command; if not found, return an error with install instructions
+- [x] **GREEN**: Implement `CheckDependency()` — look up the command; if not found, return an error with install instructions
 
-- [ ] **RUN**: Confirm test PASSES
+- [x] **RUN**: Confirm test PASSES
 
-- [ ] **REFACTOR**: Confirm the MacBackend version returns "Requires osascript (bundled with macOS)" on the same path
+- [x] **REFACTOR**: Confirm the MacBackend version returns "Requires osascript (bundled with macOS)" on the same path
 
 - [ ] **COMMIT**: `"feat: trash backends report missing dependency with install instructions"`
 
