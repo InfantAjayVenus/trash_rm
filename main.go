@@ -11,12 +11,12 @@ import (
 
 	"golang.org/x/term"
 
-	"github.com/markandeyan/trash-rm/internal/app"
-	"github.com/markandeyan/trash-rm/internal/args"
-	"github.com/markandeyan/trash-rm/internal/platform"
-	"github.com/markandeyan/trash-rm/internal/restore"
-	"github.com/markandeyan/trash-rm/internal/rm"
-	"github.com/markandeyan/trash-rm/internal/trash"
+	"github.com/InfantAjayVenus/trash-rm/internal/app"
+	"github.com/InfantAjayVenus/trash-rm/internal/args"
+	"github.com/InfantAjayVenus/trash-rm/internal/platform"
+	"github.com/InfantAjayVenus/trash-rm/internal/restore"
+	"github.com/InfantAjayVenus/trash-rm/internal/rm"
+	"github.com/InfantAjayVenus/trash-rm/internal/trash"
 )
 
 func main() {

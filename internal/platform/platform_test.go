@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/markandeyan/trash-rm/internal/platform"
+	"github.com/InfantAjayVenus/trash-rm/internal/platform"
 )
 
 func TestLogPath_Linux(t *testing.T) {

@@ -3,7 +3,7 @@ package args_test
 import (
 	"testing"
 
-	"github.com/markandeyan/trash-rm/internal/args"
+	"github.com/InfantAjayVenus/trash-rm/internal/args"
 )
 
 func TestCalledAsRm_False(t *testing.T) {

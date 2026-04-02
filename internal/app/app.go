@@ -10,10 +10,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/markandeyan/trash-rm/internal/args"
-	"github.com/markandeyan/trash-rm/internal/log"
-	"github.com/markandeyan/trash-rm/internal/restore"
-	"github.com/markandeyan/trash-rm/internal/trash"
+	"github.com/InfantAjayVenus/trash-rm/internal/args"
+	"github.com/InfantAjayVenus/trash-rm/internal/log"
+	"github.com/InfantAjayVenus/trash-rm/internal/restore"
+	"github.com/InfantAjayVenus/trash-rm/internal/trash"
 )
 
 // Commander constructs an exec.Cmd. Matches the pattern used in trash and restore packages.

@@ -7,7 +7,7 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/markandeyan/trash-rm/internal/log"
+	"github.com/InfantAjayVenus/trash-rm/internal/log"
 )
 
 // Commander constructs an exec.Cmd, used as a seam for testing.

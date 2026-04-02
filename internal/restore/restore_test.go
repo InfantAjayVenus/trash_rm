@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/markandeyan/trash-rm/internal/log"
-	"github.com/markandeyan/trash-rm/internal/restore"
+	"github.com/InfantAjayVenus/trash-rm/internal/log"
+	"github.com/InfantAjayVenus/trash-rm/internal/restore"
 )
 
 // recordedCall captures one Commander invocation.

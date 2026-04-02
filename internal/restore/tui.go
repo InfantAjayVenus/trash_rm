@@ -7,7 +7,7 @@ import (
 
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/markandeyan/trash-rm/internal/log"
+	"github.com/InfantAjayVenus/trash-rm/internal/log"
 )
 
 // BubbleteaSelectFunc returns a SelectFunc backed by a bubbletea interactive list.

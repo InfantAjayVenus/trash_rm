@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/markandeyan/trash-rm/internal/rm"
+	"github.com/InfantAjayVenus/trash-rm/internal/rm"
 )
 
 func TestRealRmPath_NoneExist(t *testing.T) {

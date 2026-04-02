@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/markandeyan/trash-rm/internal/log"
+	"github.com/InfantAjayVenus/trash-rm/internal/log"
 )
 
 func TestAppend_AppendsWithoutOverwriting(t *testing.T) {

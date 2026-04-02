@@ -9,10 +9,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/markandeyan/trash-rm/internal/app"
-	"github.com/markandeyan/trash-rm/internal/args"
-	"github.com/markandeyan/trash-rm/internal/log"
-	"github.com/markandeyan/trash-rm/internal/trash"
+	"github.com/InfantAjayVenus/trash-rm/internal/app"
+	"github.com/InfantAjayVenus/trash-rm/internal/args"
+	"github.com/InfantAjayVenus/trash-rm/internal/log"
+	"github.com/InfantAjayVenus/trash-rm/internal/trash"
 )
 
 // recordingCommander records calls and delegates to the given exec.Cmd factory.

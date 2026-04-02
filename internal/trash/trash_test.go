@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/markandeyan/trash-rm/internal/trash"
+	"github.com/InfantAjayVenus/trash-rm/internal/trash"
 )
 
 // call records a single Commander invocation.
