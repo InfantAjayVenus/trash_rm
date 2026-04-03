@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os/exec"
+	"path/filepath"
 	"strings"
 
 	"github.com/InfantAjayVenus/trash-rm/internal/log"
@@ -22,7 +23,7 @@ type SelectFunc func(entries []log.LogEntry) (int, error)
 func FilterAlive(entries []log.LogEntry, trashListOutput string) []log.LogEntry {
 	var alive []log.LogEntry
 	for _, entry := range entries {
-		if anyFileInTrashList(entry.Files, trashListOutput) {
+		if anyFileInTrashList(entry, trashListOutput) {
 			alive = append(alive, entry)
 		}
 	}
@@ -34,20 +35,32 @@ func FilterAlive(entries []log.LogEntry, trashListOutput string) []log.LogEntry 
 // an explicit "permanently deleted from trash" error message.
 func RestoreEntry(entry log.LogEntry, commander Commander) error {
 	for _, f := range entry.Files {
-		cmd := commander("trash-restore", f)
+		originalPath := originalPathFor(entry.CWD, f)
+		cmd := commander("trash-restore", originalPath)
+		cmd.Stdin = strings.NewReader("0\n")
+		var out bytes.Buffer
+		cmd.Stdout = &out
+		cmd.Stderr = &out
 		if err := cmd.Run(); err != nil {
-			return permanentlyDeletedOrError(f, commander)
+			return permanentlyDeletedOrError(originalPath, commander, err, out.String())
+		}
+		if fileStillInTrash(originalPath, commander) {
+			return fmt.Errorf("failed to restore %s from trash", originalPath)
 		}
 	}
 	return nil
 }
 
-func permanentlyDeletedOrError(file string, commander Commander) error {
+func permanentlyDeletedOrError(file string, commander Commander, runErr error, output string) error {
 	trashListOutput := trashListContents(commander)
 	if !strings.Contains(trashListOutput, file) {
 		return fmt.Errorf("Cannot restore %s: it has been permanently deleted from trash", file)
 	}
-	return fmt.Errorf("failed to restore %s from trash", file)
+	output = strings.TrimSpace(output)
+	if output != "" {
+		return fmt.Errorf("failed to restore %s from trash: %s", file, output)
+	}
+	return fmt.Errorf("failed to restore %s from trash: %v", file, runErr)
 }
 
 func trashListContents(commander Commander) string {
@@ -105,11 +118,22 @@ func rewriteWithoutEntry(logPath string, entries []log.LogEntry, restored log.Lo
 	return log.Rewrite(logPath, remaining)
 }
 
-func anyFileInTrashList(files []string, trashListOutput string) bool {
-	for _, f := range files {
-		if strings.Contains(trashListOutput, f) {
+func anyFileInTrashList(entry log.LogEntry, trashListOutput string) bool {
+	for _, f := range entry.Files {
+		if strings.Contains(trashListOutput, originalPathFor(entry.CWD, f)) {
 			return true
 		}
 	}
 	return false
+}
+
+func fileStillInTrash(file string, commander Commander) bool {
+	return strings.Contains(trashListContents(commander), file)
+}
+
+func originalPathFor(cwd, file string) string {
+	if filepath.IsAbs(file) {
+		return filepath.Clean(file)
+	}
+	return filepath.Clean(filepath.Join(cwd, file))
 }

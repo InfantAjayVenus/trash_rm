@@ -45,7 +45,7 @@ func TestFilterAlive_ReturnsOnlyLiveEntries(t *testing.T) {
 		{Timestamp: "2026-01-02T00:00:00Z", Command: "trash-rm bar.txt", CWD: "/home/alice", Files: []string{"bar.txt"}},
 	}
 
-	trashListOutput := "/home/alice/foo.txt\n2026-01-01 00:00:00 foo.txt\n"
+	trashListOutput := "/home/alice/foo.txt\n2026-01-01 00:00:00 /home/alice/foo.txt\n"
 
 	alive := restore.FilterAlive(entries, trashListOutput)
 
@@ -71,7 +71,7 @@ func TestRestoreEntry_PermanentlyDeletedError(t *testing.T) {
 			return exec.Command("false")
 		}
 		// trash-list — returns output that does NOT contain gone.txt
-		return exec.Command("echo", "2026-01-01 00:00:00 other.txt")
+		return exec.Command("echo", "2026-01-01 00:00:00 /home/alice/other.txt")
 	}
 
 	err := restore.RestoreEntry(entry, commander)
@@ -100,10 +100,18 @@ func TestRun_RemovesEntryAfterRestore(t *testing.T) {
 	// SelectFunc always picks index 0 (entryA)
 	alwaysPickFirst := func(entries []log.LogEntry) (int, error) { return 0, nil }
 
-	// Commander: trash-restore succeeds; trash-list contains both files (so FilterAlive passes both)
+	trashListCalls := 0
+
+	// Commander: both files are initially in trash; after restoring a.txt only b.txt remains.
 	successCommander := func(name string, args ...string) *exec.Cmd {
 		if name == "trash-list" {
-			return exec.Command("echo", "a.txt\nb.txt")
+			trashListCalls++
+			switch trashListCalls {
+			case 1:
+				return exec.Command("echo", "/tmp/a.txt\n/tmp/b.txt")
+			default:
+				return exec.Command("echo", "/tmp/b.txt")
+			}
 		}
 		return exec.Command("true")
 	}
@@ -133,7 +141,7 @@ func TestFilterAlive_AllGarbageCollected(t *testing.T) {
 	}
 
 	// trash-list output contains neither foo.txt nor bar.txt
-	trashListOutput := "2026-01-03 00:00:00 other.txt\n"
+	trashListOutput := "2026-01-03 00:00:00 /home/alice/other.txt\n"
 
 	alive := restore.FilterAlive(entries, trashListOutput)
 
@@ -157,14 +165,20 @@ func TestRestoreEntry_CallsTrashRestorePerFile(t *testing.T) {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	if len(calls) != 2 {
-		t.Fatalf("expected 2 commander calls, got %d", len(calls))
+	if len(calls) != 4 {
+		t.Fatalf("expected 4 commander calls, got %d", len(calls))
 	}
-	if calls[0].name != "trash-restore" || calls[0].args[0] != "foo.txt" {
-		t.Errorf("first call: got (%s, %v), want (trash-restore, [foo.txt])", calls[0].name, calls[0].args)
+	if calls[0].name != "trash-restore" || calls[0].args[0] != "/home/alice/foo.txt" {
+		t.Errorf("first call: got (%s, %v), want (trash-restore, [/home/alice/foo.txt])", calls[0].name, calls[0].args)
 	}
-	if calls[1].name != "trash-restore" || calls[1].args[0] != "bar.txt" {
-		t.Errorf("second call: got (%s, %v), want (trash-restore, [bar.txt])", calls[1].name, calls[1].args)
+	if calls[1].name != "trash-list" {
+		t.Errorf("second call: got (%s, %v), want (trash-list, [])", calls[1].name, calls[1].args)
+	}
+	if calls[2].name != "trash-restore" || calls[2].args[0] != "/home/alice/bar.txt" {
+		t.Errorf("third call: got (%s, %v), want (trash-restore, [/home/alice/bar.txt])", calls[2].name, calls[2].args)
+	}
+	if calls[3].name != "trash-list" {
+		t.Errorf("fourth call: got (%s, %v), want (trash-list, [])", calls[3].name, calls[3].args)
 	}
 }
 
@@ -179,7 +193,7 @@ func TestRun_UserQuitsWithoutRestoring(t *testing.T) {
 
 	quitFn := func(entries []log.LogEntry) (int, error) { return -1, nil }
 	trashListCommander := func(name string, args ...string) *exec.Cmd {
-		return exec.Command("echo", "foo.txt") // file appears in trash-list so it passes FilterAlive
+		return exec.Command("echo", "/home/user/foo.txt") // file appears in trash-list so it passes FilterAlive
 	}
 
 	var out strings.Builder
@@ -190,5 +204,29 @@ func TestRun_UserQuitsWithoutRestoring(t *testing.T) {
 	remaining, _ := log.ReadAll(logPath)
 	if len(remaining) != 1 {
 		t.Errorf("log should be unchanged after quit, got %d entries", len(remaining))
+	}
+}
+
+func TestRestoreEntry_ReturnsErrorWhenFileStillInTrashAfterCommandSucceeds(t *testing.T) {
+	entry := log.LogEntry{
+		Timestamp: "2026-01-01T00:00:00Z",
+		Command:   "trash-rm foo.txt",
+		CWD:       "/home/alice",
+		Files:     []string{"foo.txt"},
+	}
+
+	commander := func(name string, args ...string) *exec.Cmd {
+		if name == "trash-restore" {
+			return exec.Command("echo", "No files trashed from current dir")
+		}
+		return exec.Command("echo", "/home/alice/foo.txt")
+	}
+
+	err := restore.RestoreEntry(entry, commander)
+	if err == nil {
+		t.Fatal("expected an error, got nil")
+	}
+	if !strings.Contains(err.Error(), "failed to restore /home/alice/foo.txt from trash") {
+		t.Fatalf("unexpected error: %v", err)
 	}
 }
